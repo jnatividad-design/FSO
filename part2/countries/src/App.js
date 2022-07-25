@@ -4,9 +4,38 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const Country = ({country}) => {
+  const [ state, setState ] = useState(false)
+  
+  const handleClick = () => {
+    setState(!state)
+  } 
+
   return(
-<li>{country.name.common}</li>
+<li>{country} <button onClick={handleClick}>show</button>
+    {state && <CountryInfo country={country} />}
+</li>
   )}
+
+const Language = ({language}) => {
+  return (
+    <li> {language} </li>
+  )
+}
+  const CountryInfo = ({ country }) => (
+    <div>
+      <h1>{country.name}</h1>
+        <p>capital {country.capital}</p>
+        <p>population {country.population}</p>
+      <h2>languages</h2>
+        {/* <ul>
+          {country.languages.map(language =>
+            <Language key={language.name} language={language.name} />
+          )}
+        </ul> */}
+      <img src={country.flag} width="33%" height="33%" />
+      {/* <Weather capital={country.capital} /> */}
+    </div>
+  )
 
 const Result = (props) => {
   const {countries, newFilter,} = props
@@ -15,7 +44,7 @@ const Result = (props) => {
     if (countries.length === 1) {
       return (
         <div>
-        <Country country={countries[0]} />
+        <CountryInfo country={countries[0]} />
       </div>
       )
     }
@@ -26,7 +55,7 @@ const Result = (props) => {
             countries.map(e => {
               return (
                 <div key={e.name}>
-                  <Country country={e}/>
+                  <Country country={e.name}/>
                 </div>
               )
             })
@@ -46,11 +75,10 @@ return (<div></div>)
 const App = () => {
     const [countries, setCountries] = useState([])
     const [newFilter, setNewFilter] = useState('')
-    const [showCountries, setShowCountries] = useState(true)
-
+    
 
     useEffect(() => {
-      axios.get('https://restcountries.com/v3.1/all').then(response => {
+      axios.get('https://restcountries.com/v2/all').then(response => {
         setCountries(response.data)
       })
     }, [])
@@ -60,18 +88,9 @@ const App = () => {
       console.log(event.target.value)
       setNewFilter(event.target.value)
       const regex = new RegExp ( newFilter, 'i');
-      const filteredCountries = () => countries.filter(country => country.name.common.match(regex));
+      const filteredCountries = () => countries.filter(country => country.name.match(regex));
       setCountries(filteredCountries)
     }
-      
-      
-    //Other filter array I was working with 
-    //   let value = ''
-    //   if (event.target.value.length > 0) {
-    //     value = event.target.value
-    //   }
-    //   setNewFilter(value)
-    // }
 
   return (
     <div>
