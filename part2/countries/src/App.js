@@ -5,7 +5,7 @@ import axios from 'axios'
 
 const Country = ({country}) => {
   return(
-<li>{country.name}</li>
+<li>{country.name.common}</li>
   )}
 
 const Result = (props) => {
@@ -60,7 +60,7 @@ const App = () => {
       console.log(event.target.value)
       setNewFilter(event.target.value)
       const regex = new RegExp ( newFilter, 'i');
-      const filteredCountries = () => countries.filter(country => country.name.match(regex));
+      const filteredCountries = () => countries.filter(country => country.name.common.match(regex));
       setCountries(filteredCountries)
     }
       
