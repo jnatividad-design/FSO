@@ -11,8 +11,8 @@ const Country = ({country}) => {
   } 
 
   return(
-<li>{country} <button onClick={handleClick}>show</button>
-    {state && <CountryInfo country={country} />}
+<li>{country} <button>show</button>
+    {/* {state && <CountryInfo country={country} />} */}
 </li>
   )}
 
@@ -21,24 +21,63 @@ const Language = ({language}) => {
     <li> {language} </li>
   )
 }
-  const CountryInfo = ({ country }) => (
+
+
+  const CountryInfo = ({ country }) => {
+    const [weather,setWeather] = useState([])
+
+    const api_key = process.env.REACT_APP_API_KEY
+    const weather_api = (`https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&appid=${api_key}&units=imperial`)
+
+    useEffect (() => {
+      axios
+      .get(weather_api)
+      .then(response => {
+        setWeather([response.data])
+      })
+    })
+
+    if (weather.length > 0) {
+      const currentWeather = weather[0]
+      const weatherIcon = weather.weather.icon[0]
+      console.log(weatherIcon)
+      return (
+        <div>
+          <h1>{country.name}</h1>
+          <p>capital: {country.capital}</p>
+          <p>population: {country.population}</p>
+          <h2>Spoken languages</h2>
+          <ul>
+            {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
+          </ul>
+          <img src={country.flag} width="33%" height="33%" alt="Country flag"></img>
+          <h2>Weather in {country.capital}</h2>
+          <p>temperature: {currentWeather.main.temp}° Fahrenheit</p>
+          <img src={currentWeather.weather.icon} alt="Weather icon"></img>
+          <p>wind: {currentWeather.wind.speed} mph direction {currentWeather.wind.deg}</p>
+        </div>
+      )
+    }
+    
+    
+    return (
     <div>
       <h1>{country.name}</h1>
         <p>capital {country.capital}</p>
         <p>population {country.population}</p>
       <h2>languages</h2>
-        {/* <ul>
+        <ul>
           {country.languages.map(language =>
             <Language key={language.name} language={language.name} />
           )}
-        </ul> */}
+        </ul>
       <img src={country.flag} width="33%" height="33%" />
       {/* <Weather capital={country.capital} /> */}
     </div>
   )
-
+ }
 const Result = (props) => {
-  const {countries, newFilter,} = props
+  const {countries, newFilter,setCountries,} = props
   
   if(newFilter) {
     if (countries.length === 1) {
@@ -50,17 +89,11 @@ const Result = (props) => {
     }
     else if (countries.length >= 2 && countries.length <= 10) {
       return (
-        <div>
-          {
-            countries.map(e => {
-              return (
-                <div key={e.name}>
-                  <Country country={e.name}/>
-                </div>
-              )
-            })
-          }
-        </div>
+      <ul>
+          {countries.map((country, i) =>
+            <li key={i}> {country.name} <button onClick={() => setCountries([country])}>show</button></li>
+          )}
+        </ul>
       )
   }else if (countries.length > 10) {
     return (
