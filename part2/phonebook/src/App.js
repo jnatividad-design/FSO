@@ -3,6 +3,7 @@ import axios from 'axios'
 import Person from './components/Person'
 import Filter from './components/Filter'
 import Header from './components/Header'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,14 +13,13 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
+    personService
+    .getAll()
+    .then(response => {
+      setPersons(response.data)
+    })
   }, [])
-  console.log('render', persons.length, 'notes')
+  console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -33,11 +33,22 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
    }
-    setNewNumber(persons.concat(personObject))
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
+   personService
+      .create(personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewNumber(persons.concat(response.data))
+        setNewNumber('')
+        setNewName('')
+      })
   }
+  }
+
+  //Delete current contact entry
+  const buttonDeleteof = name => {
+    console.log( name + ' ' + 'needs to be deleted')
+    // const person = persons.find(n => n.id === id)
+    // const deletedPerson = {...persons, }
   }
 
   //To check if array has something in it
@@ -45,21 +56,19 @@ const App = () => {
     if (element.name === newName) {
       return true;
     }
-
     return false;
   });
 
-
   const handleNameSubmit = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewName(event.target.value)
   }
   const handleNumberSubmit = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewNumber(event.target.value)
   }
   const handleFilterSubmit = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewFilter(event.target.value)
     const regex = new RegExp ( newFilter, 'i');
     const filteredPersons = () => persons.filter(person => person.name.match(regex))
@@ -92,11 +101,17 @@ const App = () => {
       <Header title='Numbers' />
       <ul>
         {persons.map( person =>
-          <Person key={person.id} person={person} number={person}/>
+          <Person 
+          key={person.id} 
+          person={person} 
+          number={person}
+          deletePerson={ () => buttonDeleteof(person.name)}/>
           )}
+          
       </ul>
     </div>
   )
 }
+
 
 export default App;

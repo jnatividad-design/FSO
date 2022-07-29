@@ -39,8 +39,6 @@ const Language = ({language}) => {
 
     if (weather.length > 0) {
       const currentWeather = weather[0]
-      const weatherIcon = weather.weather.icon[0]
-      console.log(weatherIcon)
       return (
         <div>
           <h1>{country.name}</h1>
