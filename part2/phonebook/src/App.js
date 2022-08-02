@@ -45,8 +45,8 @@ const App = () => {
   }
 
   //Delete current contact entry
-  const buttonDeleteof = name => {
-    console.log( name + ' ' + 'needs to be deleted')
+  const buttonDeleteof = id => {
+    console.log( id + ' ' + 'needs to be deleted')
     // const person = persons.find(n => n.id === id)
     // const deletedPerson = {...persons, }
   }
@@ -105,7 +105,7 @@ const App = () => {
           key={person.id} 
           person={person} 
           number={person}
-          deletePerson={ () => buttonDeleteof(person.name)}/>
+          deletePerson={ () => buttonDeleteof(person.id)}/>
           )}
           
       </ul>
