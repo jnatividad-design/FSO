@@ -44,11 +44,13 @@ const App = () => {
   }
   }
 
-  //Delete current contact entry
+
+  //Delete current contact entry button
   const buttonDeleteof = id => {
+    const person = persons.find(n => n.id === id )
+    const personName = person.name
     console.log( id + ' ' + 'needs to be deleted')
-    // const person = persons.find(n => n.id === id)
-    // const deletedPerson = {...persons, }
+    window.confirm(`Are you sure you want to delete ${personName}?`)
   }
 
   //To check if array has something in it
