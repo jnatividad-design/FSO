@@ -23,10 +23,21 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    
+
     if (isFound) {
       console.log(`✅ array already contains object with name ${newName}`);
-      alert(`${newName} is already added to the phonebook`)
+      if (window.confirm(`${newName} is already added to the phonebook. Do you want to replace the old number with a new one?`)) {
+        const person = (persons.find(n => n.name === newName))
+        const changedNumber = {...person, number: newNumber }
+        console.log(person)
+        console.log(changedNumber)
+        personService
+        .update(person.id, changedNumber)
+        .then(response => {
+          setPersons(persons.map(person => person.id !== person ? person : response.data))
+        })
+        console.log(`${newName}'s number was replaced`)
+      }
     }
    else {const personObject = {
       name: newName,
@@ -48,9 +59,18 @@ const App = () => {
   //Delete current contact entry button
   const buttonDeleteof = id => {
     const person = persons.find(n => n.id === id )
+    const changedPerson = {...person}
     const personName = person.name
+    const personId = person.id
     console.log( id + ' ' + 'needs to be deleted')
-    window.confirm(`Are you sure you want to delete ${personName}?`)
+   if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
+     personService
+     .remove(personId)
+     .then(response => {
+      setPersons(persons.map(person => person.id !== id ? person : response.data))
+     })
+        console.log(`${personName} deleted`)
+   }
   }
 
   //To check if array has something in it
@@ -109,7 +129,6 @@ const App = () => {
           number={person}
           deletePerson={ () => buttonDeleteof(person.id)}/>
           )}
-          
       </ul>
     </div>
   )
