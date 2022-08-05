@@ -5,11 +5,24 @@ import Filter from './components/Filter'
 import Header from './components/Header'
 import personService from './services/persons'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notification'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber,setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -37,6 +50,10 @@ const App = () => {
           setPersons(persons.map(person => person.id !== person ? person : response.data))
         })
         console.log(`${newName}'s number was replaced`)
+        setNotification(`${newName} was replaced`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       }
     }
    else {const personObject = {
@@ -44,6 +61,7 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
    }
+   setNotification(`${newName} was added`)
    personService
       .create(personObject)
       .then(response => {
@@ -52,6 +70,9 @@ const App = () => {
         setNewNumber('')
         setNewName('')
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
   }
   }
 
@@ -60,8 +81,8 @@ const App = () => {
   const buttonDeleteof = id => {
     const person = persons.find(n => n.id === id )
     const changedPerson = {...person}
-    const personName = person.name
-    const personId = person.id
+    const personName = changedPerson.name
+    const personId = changedPerson.id
     console.log( id + ' ' + 'needs to be deleted')
    if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
      personService
@@ -69,7 +90,11 @@ const App = () => {
      .then(response => {
       setPersons(persons.map(person => person.id !== id ? person : response.data))
      })
+        setNotification(`${personName} Deleted`)
         console.log(`${personName} deleted`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
    }
   }
 
@@ -100,6 +125,7 @@ const App = () => {
   return (
     <div>
       <Header title='Phonebook' />
+      <Notification message={notification} />
       <Filter value={newFilter} onChange={handleFilterSubmit} />
       <Header title='Add a number' />
       <form onSubmit={addPerson}>

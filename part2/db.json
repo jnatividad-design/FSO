@@ -29,6 +29,12 @@
       "date": "2022-07-28T00:19:27.977Z",
       "important": false,
       "id": 5
+    },
+    {
+      "content": "I am learning CSS in React!",
+      "date": "2022-08-03T23:53:41.054Z",
+      "important": false,
+      "id": 6
     }
   ]
 }
