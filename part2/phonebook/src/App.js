@@ -48,12 +48,19 @@ const App = () => {
         .update(person.id, changedNumber)
         .then(response => {
           setPersons(persons.map(person => person.id !== person ? person : response.data))
+          console.log(`${newName}'s number was replaced`)
+          setNotification(`${newName} was replaced`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
-        console.log(`${newName}'s number was replaced`)
-        setNotification(`${newName} was replaced`)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
+        .catch(error => {
+          console.log(`${newName}'s number was already replaced`)
+          setNotification(`${newName} was already replaced`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
       }
     }
    else {const personObject = {
@@ -61,18 +68,18 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
    }
-   setNotification(`${newName} was added`)
    personService
-      .create(personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewNumber(persons.concat(response.data))
+   .create(personObject)
+   .then(response => {
+     setPersons(persons.concat(response.data))
+     setNewNumber(persons.concat(response.data))
+     setNotification(`${newName} was added`)
+     setTimeout(() => {
+       setNotification(null)
+     }, 5000)
         setNewNumber('')
         setNewName('')
       })
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
   }
   }
 
@@ -89,12 +96,16 @@ const App = () => {
      .remove(personId)
      .then(response => {
       setPersons(persons.map(person => person.id !== id ? person : response.data))
+      setNotification(`${personName} Deleted`)
+      console.log(`${personName} deleted`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
      })
-        setNotification(`${personName} Deleted`)
-        console.log(`${personName} deleted`)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
+     .catch(error => {
+      console.log(`${personName}'s was already deleted`)
+      setNotification(`${newName} was already deleted`)
+   })
    }
   }
 
